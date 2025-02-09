@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:erp_appp/data/models/response/product_vendor_model.dart';
 import 'package:erp_appp/ui/screens/vendor/cubit/your_item_page/product_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 
 class AddNewItemPage extends StatefulWidget {
   const AddNewItemPage({super.key});
@@ -16,22 +13,9 @@ class AddNewItemPage extends StatefulWidget {
 class _AddNewItemPageState extends State<AddNewItemPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
-  File? _pickedImage;
-
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _pickedImage = File(pickedFile.path);
-      });
-    }
-  }
 
   void _addProduct(BuildContext context) {
-    if (_nameController.text.isEmpty ||
-        _priceController.text.isEmpty ||
-        _pickedImage == null) {
+    if (_nameController.text.isEmpty || _priceController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("All fields are required!")),
       );
@@ -42,7 +26,8 @@ class _AddNewItemPageState extends State<AddNewItemPage> {
       id: DateTime.now().toString(),
       name: _nameController.text,
       price: double.parse(_priceController.text),
-      image: _pickedImage!,
+      imageUrl:
+          "https://media.gettyimages.com/id/120170463/photo/series-of-well-lit-crystal-chandeliers.jpg?s=1024x1024&w=gi&k=20&c=v1Zp-WOBSPkhYsTYMoh1nh-QFUnnI1NNqRDEEb79E_0=",
     );
 
     context.read<ProductCubit>().addProduct(newProduct);
@@ -50,9 +35,6 @@ class _AddNewItemPageState extends State<AddNewItemPage> {
     // Clear inputs
     _nameController.clear();
     _priceController.clear();
-    setState(() {
-      _pickedImage = null;
-    });
 
     Navigator.of(context).pop(); // Đóng dialog
     ScaffoldMessenger.of(context).showSnackBar(
@@ -78,20 +60,6 @@ class _AddNewItemPageState extends State<AddNewItemPage> {
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _pickImage,
-              child: const Text("Pick Image"),
-            ),
-            if (_pickedImage != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Image.file(
-                  _pickedImage!,
-                  height: 100,
-                  width: 100,
-                  fit: BoxFit.cover,
-                ),
-              ),
           ],
         ),
         actions: [
@@ -117,8 +85,8 @@ class _AddNewItemPageState extends State<AddNewItemPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProductCubit, List<ProductVendorModel>>(
-      builder: (context, products) {
+    return BlocBuilder<ProductCubit, ProductState>(
+      builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             title: const Text("Add Items"),
@@ -130,18 +98,18 @@ class _AddNewItemPageState extends State<AddNewItemPage> {
               ),
             ],
           ),
-          body: products.isEmpty
+          body: state.products.isEmpty
               ? const Center(child: Text("No products added yet."))
               : ListView.builder(
-                  itemCount: products.length,
+                  itemCount: state.products.length,
                   itemBuilder: (context, index) {
-                    final product = products[index];
+                    final product = state.products[index];
                     return Card(
                       margin: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 16),
                       child: ListTile(
-                        leading: Image.file(
-                          product.image,
+                        leading: Image.network(
+                          product.imageUrl,
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,

@@ -1,6 +1,7 @@
 import 'package:erp_appp/cubit/auth/auth_cubit.dart';
 import 'package:erp_appp/ui/screens/user/cart_screen.dart';
 import 'package:erp_appp/ui/screens/user/cubit/cart_cubit.dart';
+import 'package:erp_appp/ui/screens/user/cubit/product_user_cubit.dart';
 import 'package:erp_appp/ui/screens/user/vendor_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,8 +30,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CartCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => CartCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ProductUserCubit()..fetchProducts(),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Welcome User"),

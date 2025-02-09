@@ -1,5 +1,6 @@
 import 'package:erp_appp/data/models/response/user_model.dart';
-import 'package:erp_appp/data/service/database_service.dart';
+import 'package:mysql_db/db/database_service.dart';
+
 
 sealed class AdminRepository {
   Future<List<UserModel>> fetchUsers();

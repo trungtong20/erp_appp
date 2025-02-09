@@ -51,6 +51,10 @@ dependencies:
   objectbox:
   mysql_client:
   cached_network_image: ^3.4.1
+  bloc_test: ^9.1.7
+  mockito: ^5.4.4
+  mysql_db:
+    path: modules/mysql_db
 
 dev_dependencies:
   flutter_test:

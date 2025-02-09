@@ -1,17 +1,15 @@
-import 'dart:io';
-
 class ProductVendorModel {
   String id;
   String name;
   double price;
-  File image;
+  String imageUrl;
   int quantity;
 
   ProductVendorModel({
     required this.id,
     required this.name,
     required this.price,
-    required this.image,
+    required this.imageUrl,
     this.quantity = 1,
   });
 }

@@ -22,14 +22,14 @@ class _VendorMainPageState extends State<VendorMainPage> {
   // Pages for each bottom navigation tab
   final List<Widget> _pages = [
     const YourItemsPage(), // "Your Item" page
-    AddNewItemPage(), // "Add New Item" page
+    const AddNewItemPage(), // "Add New Item" page
     TransactionPage(), // "Transaction" page
   ];
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProductCubit(),
+      create: (context) => ProductCubit()..fetchProducts(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Welcome, Vendor"),

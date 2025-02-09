@@ -1,4 +1,3 @@
-import 'package:erp_appp/data/models/response/product_vendor_model.dart';
 import 'package:erp_appp/ui/screens/vendor/cubit/your_item_page/product_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,20 +21,20 @@ class YourItemsView extends StatelessWidget {
         title: const Text("Your Items"),
         automaticallyImplyLeading: false,
       ),
-      body: BlocBuilder<ProductCubit, List<ProductVendorModel>>(
-        builder: (context, products) {
-          if (products.isEmpty) {
+      body: BlocBuilder<ProductCubit, ProductState>(
+        builder: (context, state) {
+          if (state.products.isEmpty) {
             return const Center(child: Text("No products added yet."));
           }
           return ListView.builder(
-            itemCount: products.length,
+            itemCount: state.products.length,
             itemBuilder: (context, index) {
-              final product = products[index];
+              final product = state.products[index];
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: ListTile(
-                  leading: Image.file(
-                    product.image,
+                  leading: Image.network(
+                    product.imageUrl,
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,

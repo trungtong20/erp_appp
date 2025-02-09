@@ -23,8 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   @override
   void initState() {
-    _controllerUsername.text = "admin";
-    _controllerPassword.text = "admin123";
+    // _controllerUsername.text = "admin";
+    // _controllerPassword.text = "admin123";
     super.initState();
   }
 

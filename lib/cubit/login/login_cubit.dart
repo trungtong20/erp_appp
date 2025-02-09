@@ -13,43 +13,51 @@ class LoginCubit extends Cubit<LoginAppState> {
   LoginCubit() : super(LoginAppInitialState());
   final AuthenRepository _authenRepository = serviceLocator();
 
-  final Map<String, Map<String, dynamic>> fakeUsers = {
-    'admin': {'password': 'admin123', 'role': UserRole.admin},
-    'vendor': {'password': 'vendor123', 'role': UserRole.vendor},
-    'user': {'password': 'user123', 'role': UserRole.user},
+  final Map<String, UserRole> fakeUsers = {
+    'admin': UserRole.admin,
+    'vendor': UserRole.vendor,
+    'user': UserRole.user,
   };
 
   void handleLogin({required String email, required String password}) async {
     try {
       emit(LoginInLoadingState());
-      // final result = await _authenRepository
-      //     .loginApp(LoginRequest(userName: email, passWord: password));
-      _handleLoginFakeAccount(email: email, password: password);
-      // serviceLocator
-      //     .get<SharedPreferencesManager>()
-      //     .putString(KeyStorageConstants.jwt, result.token);
+
+      _handleLoginFakeAccount(email: email);
+
+      // final result = await _authenRepository.loginApp(LoginRequest(userName: email));
+      // serviceLocator.get<SharedPreferencesManager>().putString(KeyStorageConstants.jwt, result.token);
       // emit(LoggedInState());
     } on DioExceptionType catch (e) {
       emit(LoginErrorState(error: e.name));
     }
   }
 
-  void _handleLoginFakeAccount(
-      {required String email, required String password}) {
-    if (fakeUsers.containsKey(email) &&
-        fakeUsers[email]!['password'] == password) {
-      final userRole = fakeUsers[email]!['role'] as UserRole;
+  void _handleLoginFakeAccount({required String email}) {
+    final normalizedEmail = email.toLowerCase();
 
+    String? matchedKey;
+    UserRole? matchedRole;
+
+    for (var entry in fakeUsers.entries) {
+      if (normalizedEmail.contains(entry.key)) {
+        matchedKey = entry.key;
+        matchedRole = entry.value;
+        break;
+      }
+    }
+
+    if (matchedRole != null) {
       // Fake token
       const fakeToken = 'fake_jwt_token';
 
-      // Lưu token và role vào SharedPreferences
       final prefs = serviceLocator.get<SharedPreferencesManager>();
       prefs.putString(KeyStorageConstants.jwt, fakeToken);
-      prefs.putString(KeyStorageConstants.userRole, userRole.toString());
-      emit(LoggedInState(userRole: userRole));
+      prefs.putString(KeyStorageConstants.userRole, matchedRole.toString());
+
+      emit(LoggedInState(userRole: matchedRole));
     } else {
-      emit(const LoginErrorState(error: "Email or password is incorrect"));
+      emit(const LoginErrorState(error: "Username is incorrect"));
     }
   }
 }
